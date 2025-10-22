@@ -1,118 +1,105 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SafeScan - QR Okutucu</title>
-    
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&display=swap">
-    
-    <link rel="stylesheet" href="styles.css"> 
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SafeScan</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/html5-qrcode"></script>
 </head>
 <body>
-    
-<script src="https://unpkg.com/html5-qrcode"></script>
-
-<div class="app-mockup">
+  <div class="app-mockup">
     <div id="view-home" class="screen active">
-        <div class="home-content">
-            <div class="header-logo">
-                <div class="qr-logo-grid">
-                    <div class="qr-box"></div><div class="qr-box"></div>
-                    <div class="qr-box"></div><div class="qr-box"></div>
-                </div>
-            </div>
-            <div class="text-area">
-                <h1>SafeScan</h1>
-                <p>Güvenle Tarayın. En Güvenli QR Kod Tarama Çözümü.</p>
-            </div>
+      <div class="home-content">
+        <div class="header-logo">
+          <div class="qr-logo-grid">
+            <div class="qr-box"></div><div class="qr-box"></div>
+            <div class="qr-box"></div><div class="qr-box"></div>
+          </div>
         </div>
+        <div class="text-area">
+          <h1>SafeScan</h1>
+          <p>Güvenle Tarayın. En Güvenli QR Kod Tarama Çözümü.</p>
+        </div>
+      </div>
     </div>
     
     <div id="view-scanner" class="screen hidden">
-        <div class="top-bar">
-            <i id="gallery-select" class="fas fa-image icon-button"></i> 
-            <i class="spacer"></i> 
-            <i id="flash-toggle" class="fas fa-bolt icon-button"></i> 
-            <i id="camera-switch" class="fas fa-sync-alt icon-button"></i> 
+      <div class="top-bar">
+        <i id="gallery-select" class="fas fa-image icon-button"></i> 
+        <i class="spacer"></i> 
+        <i id="flash-toggle" class="fas fa-bolt icon-button"></i> 
+        <i id="camera-switch" class="fas fa-sync-alt icon-button"></i> 
+      </div>
+      <div id="scanner-container">
+        <div class="qr-frame">
+          <div class="frame-corner top-left"></div>
+          <div class="frame-corner top-right"></div>
+          <div class="frame-corner bottom-left"></div>
+          <div class="frame-corner bottom-right"></div>
+          <div class="frame-line"></div>
         </div>
-        
-        <div id="scanner-container">
-            <div class="qr-frame">
-                <div class="frame-corner top-left"></div>
-                <div class="frame-corner top-right"></div>
-                <div class="frame-corner bottom-left"></div>
-                <div class="frame-corner bottom-right"></div>
-                <div class="frame-line"></div>
-            </div>
-        </div>
+      </div>
     </div>
 
     <div id="view-result" class="screen hidden">
-        <div class="result-header">
-            <i id="back-to-home" class="fas fa-chevron-left icon-button"></i>
-            <h2>QR Kodu Sonucu</h2>
-        </div>
-        
-        <div class="result-content-area">
-            <p class="data-label">Veri / Güvenlik Kontrolü</p>
-            <p id="result-link" class="data-link"></p>
-            
-            <div id="result-text" class="data-status"></div>
-            <button id="open-link-btn" class="open-button" disabled>Bağlantıyı Aç</button>
-        </div>
+      <div class="result-header">
+        <i id="back-to-home" class="fas fa-chevron-left icon-button"></i>
+        <h2>QR Kodu Sonucu</h2>
+      </div>
+      <div class="result-content-area">
+        <p class="data-label">Veri / Güvenlik Kontrolü</p>
+        <p id="result-link" class="data-link"></p>
+        <div id="result-text" class="data-status"></div>
+        <button id="open-link-btn" class="open-button" disabled>Bağlantıyı Aç</button>
+      </div>
     </div>
     
     <div id="view-premium-info" class="screen hidden">
-        <div class="result-header">
-            <i id="back-to-previous" class="fas fa-chevron-left icon-button"></i>
-            <h2 class="center-text">Premium Avantajları</h2>
-        </div>
-        <div class="premium-info-content">
-            <i class="fas fa-gem premium-gem-icon pulse"></i> 
-            
-            <h3 class="premium-title">Reklamsız Tarama</h3>
-            <ul class="premium-features-list">
-                <li><i class="fas fa-check-circle"></i> Reklamsız, Kesintisiz Tarama.</li>
-                <li><i class="fas fa-check-circle"></i> Öncelikli API Kontrolü (Daha Hızlı Sonuç).</li>
-                <li><i class="fas fa-check-circle"></i> Sınırsız Tarama Kapasitesi.</li>
-            </ul>
-            
-            <button id="open-premium-modal" class="premium-buy-btn ad-free-button">
-                <i class="fas fa-star button-icon"></i> REKLAMLARI KALDIR
-            </button>
-        </div>
+      <div class="result-header">
+        <i id="back-to-previous" class="fas fa-chevron-left icon-button"></i>
+        <h2 class="center-text">Premium Avantajları</h2>
+      </div>
+      <div class="premium-info-content">
+        <i class="fas fa-gem premium-gem-icon pulse"></i> 
+        <h3 class="premium-title">Reklamsız Tarama</h3>
+        <ul class="premium-features-list">
+          <li><i class="fas fa-check-circle"></i> Reklamsız, Kesintisiz Tarama.</li>
+          <li><i class="fas fa-check-circle"></i> Öncelikli API Kontrolü (Daha Hızlı Sonuç).</li>
+          <li><i class="fas fa-check-circle"></i> Sınırsız Tarama Kapasitesi.</li>
+        </ul>
+        <button id="open-premium-modal" class="premium-buy-btn ad-free-button">
+          <i class="fas fa-star button-icon"></i> REKLAMLARI KALDIR
+        </button>
+      </div>
     </div>
-
 
     <div class="bottom-nav">
-        <button id="nav-home" class="nav-button active">
-            <i class="fas fa-bars"></i>
-        </button>
-        <button id="nav-scan" class="nav-button main-action-btn">
-            <i class="fas fa-qrcode"></i> 
-        </button>
-        <button id="nav-premium" class="nav-button">
-            <i class="fas fa-gift"></i> 
-        </button>
+      <button id="nav-home" class="nav-button active">
+        <i class="fas fa-bars"></i>
+      </button>
+      <button id="nav-scan" class="nav-button main-action-btn">
+        <i class="fas fa-qrcode"></i> 
+      </button>
+      <button id="nav-premium" class="nav-button">
+        <i class="fas fa-gift"></i> 
+      </button>
     </div>
-</div>
+  </div>
 
-<div id="premium-modal" class="modal hidden">
+  <div id="premium-modal" class="modal hidden">
     <div class="modal-content">
-        <h2>Satın Alma Onayı</h2>
-        <p>Aylık 9.99 TL karşılığında Premium üyeliği başlatmak üzeresiniz.</p>
-        <span class="modal-price">9.99 TL</span>
-        
-        <button class="modal-buy-btn ad-free-button">
-            <i class="fas fa-star button-icon"></i> SATIN AL
-        </button>
-        <button class="close-modal-btn">VAZGEÇ</button>
+      <h2>Satın Alma Onayı</h2>
+      <p>Aylık 9.99 TL karşılığında Premium üyeliği başlatmak üzeresiniz.</p>
+      <span class="modal-price">9.99 TL</span>
+      <button class="modal-buy-btn ad-free-button">
+        <i class="fas fa-star button-icon"></i> SATIN AL
+      </button>
+      <button class="close-modal-btn">VAZGEÇ</button>
     </div>
-</div>
+  </div>
 
-<script src="script.js"></script>
-
+  <script src="script.js"></script>
 </body>
 </html>

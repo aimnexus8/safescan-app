@@ -1,6 +1,3 @@
-<script src="https://unpkg.com/html5-qrcode"></script>
-
-<script src="script.js"></script>
 // AŞAMA 3.1: API Anahtarınızı Buraya Yerleştirin
 const SAFE_BROWSING_API_KEY = "AIzaSyDnfWE8vtPjzQ-Tf6FrLAhLb2dRRka7dJU"; 
 
@@ -67,17 +64,14 @@ function changeView(targetView) {
             navButtons[btn].classList.remove('active');
         }
     }
-    // Sadece aktif olan view'e karşılık gelen butonu aktif yap
     if (targetView === 'home' && navButtons.home) { 
         navButtons.home.classList.add('active');
     } else if (targetView === 'premiumInfo' && navButtons.premium) {
         navButtons.premium.classList.add('active');
     }
-    
-    // DÜZELTME: Geri dönüldüğünde butonları doğru renge ayarla
+
     if (targetView === 'home' && navButtons.home) navButtons.home.classList.add('active');
     if (targetView === 'premiumInfo' && navButtons.premium) navButtons.premium.classList.add('active');
-
 }
 
 // AŞAMA 3.3: QR Tarayıcı Fonksiyonları
@@ -114,14 +108,13 @@ function startScanner() {
         config.videoConstraints, 
         config,
         onScanSuccess,
-        (errorMessage) => { /* Hata mesajını görmezden gel */ }
+        (errorMessage) => {}
     ).catch(err => {
         alert("Kamera izni reddedildi veya kamera bulunamadı: " + err);
         stopScanner();
         changeView('home');
     });
 }
-
 
 // AŞAMA 3.4: API Kontrolü Fonksiyonu (Simülasyonlu)
 async function checkSafety(url) {
@@ -132,18 +125,14 @@ async function checkSafety(url) {
     return 'SAFE';
 }
 
-
 // AŞAMA 3.5: Tarama Başarılı Olduğunda İş Akışı
 async function onScanSuccess(decodedText) {
     stopScanner(); 
-    
     scannedUrl = decodedText;
-    
     changeView('result'); 
 
     resultLinkEl.textContent = scannedUrl;
     openLinkBtn.disabled = true;
-
     resultTextEl.innerHTML = `<i class="fas fa-sync-alt fa-spin"></i> Güvenlik Kontrolü Yapılıyor...`;
     
     const status = await checkSafety(scannedUrl);
@@ -160,27 +149,22 @@ async function onScanSuccess(decodedText) {
     }
 }
 
-
 // AŞAMA 3.6: Olay Dinleyicileri
 document.addEventListener('DOMContentLoaded', () => {
-    // Navigasyon Butonları
     if (navButtons.home) navButtons.home.addEventListener('click', () => changeView('home'));
     if (navButtons.scan) navButtons.scan.addEventListener('click', () => changeView('scanner'));
     if (navButtons.premium) navButtons.premium.addEventListener('click', () => changeView('premiumInfo'));
     
-    // Galeri Seçme (Simülasyon)
     if (gallerySelectBtn) {
         gallerySelectBtn.addEventListener('click', () => {
             alert("Galeri ekranı açıldı. (Burada Galeri API'si ile resim seçimi yapılır.)");
         });
     }
 
-    // Premium Bilgilendirme Ekranı -> Modal
     if (openPremiumModalBtn) {
         openPremiumModalBtn.addEventListener('click', () => premiumModal.classList.remove('hidden'));
     }
 
-    // Geri Butonları
     if (backToHome) backToHome.addEventListener('click', () => changeView('home'));
     if (backToPrevious) {
         backToPrevious.addEventListener('click', () => {
@@ -189,7 +173,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (modalCloseBtn) modalCloseBtn.addEventListener('click', () => premiumModal.classList.add('hidden'));
 
-    // Bağlantı Açma
     if (openLinkBtn) {
         openLinkBtn.addEventListener('click', () => {
             if (scannedUrl && !openLinkBtn.disabled) {
@@ -198,13 +181,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // FLAŞ ve KAMERA İŞLEVLERİ
     if (flashToggle) {
         flashToggle.addEventListener('click', () => {
             isFlashOn = !isFlashOn;
             flashToggle.classList.toggle('active', isFlashOn);
             if (html5QrcodeScanner) {
-                 html5QrcodeScanner.setTorchEnabled(isFlashOn).catch(err => { /* Hata yönetimi */ });
+                 html5QrcodeScanner.setTorchEnabled(isFlashOn).catch(err => {});
             }
         });
     }
@@ -212,10 +194,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (cameraSwitch) {
         cameraSwitch.addEventListener('click', () => {
             currentCamera = (currentCamera === 'environment') ? 'user' : 'environment';
-            
             isFlashOn = false;
             if(flashToggle) flashToggle.classList.remove('active');
-
             stopScanner();
             startScanner(); 
         });
