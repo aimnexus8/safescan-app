@@ -8,7 +8,410 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&display=swap">
     
-    <link rel="stylesheet" href="styles.css"> 
+    <style>
+        @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&display=swap');
+
+        :root {
+            --color-dark: #202020;
+            --color-light-dark: #303030;
+            --color-accent: #FFC300; /* Sarı Vurgu */
+            --color-text-light: #F8F8F8;
+            --color-text-grey: #95a5a6;
+            --color-success: #2ecc71; 
+            --color-danger: #e74c3c; 
+            --color-white: #fff;
+        }
+
+        body {
+            background-color: #f1f1f1;
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* Telefon Mockup'ı */
+        .app-mockup {
+            width: 375px; 
+            height: 812px; 
+            position: relative;
+            overflow: hidden;
+            border-radius: 40px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            background-color: var(--color-dark);
+        }
+
+        /* Ekran Yönetimi */
+        .screen {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background-color: var(--color-dark);
+            color: var(--color-text-light);
+            transition: transform 0.4s ease-in-out;
+            padding-bottom: 80px; /* Alt Navigasyon için boşluk */
+            box-sizing: border-box;
+            display: block; 
+            overflow-y: auto;
+        }
+        .screen.hidden { transform: translateX(100%); }
+        .screen.active { transform: translateX(0); }
+
+        /* ANA SAYFA (Giriş Ekranı) - İçeriği Ortala */
+        #view-home { 
+            display: flex;
+            flex-direction: column;
+            justify-content: center; 
+            align-items: center;
+            padding: 0;
+        }
+
+        .home-content {
+            padding: 100px 40px; 
+            width: 100%;
+            max-width: 375px;
+            box-sizing: border-box;
+            text-align: center; /* Metinleri ve logoyu ortala */
+        }
+
+        /* QR LOGO STİLİ - ORTALAMA */
+        .header-logo { margin-bottom: 50px; } 
+        .qr-logo-grid {
+            display: grid;
+            grid-template-columns: 10px 10px;
+            grid-template-rows: 10px 10px;
+            gap: 5px;
+            width: 25px;
+            transform: scale(3); 
+            transform-origin: center center; 
+            margin: 0 auto 50px auto; /* Ortaya hizala */
+        }
+        .qr-box { background-color: var(--color-accent); border-radius: 1px; }
+
+        .text-area { color: var(--color-white); }
+        #view-home h1 { font-size: 2.5em; font-weight: 900; margin-bottom: 10px; line-height: 1.1; }
+        #view-home p { color: var(--color-text-grey); font-size: 1em; font-weight: 300; }
+
+
+        /* TARAMA EKRANI */
+        #view-scanner {
+            padding: 0;
+            display: block;
+            background: transparent; 
+        }
+        .top-bar {
+            position: absolute;
+            top: 20px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: flex-start; 
+            padding: 0 25px;
+            z-index: 10;
+        }
+        .top-bar .spacer { flex-grow: 1; } 
+
+        .icon-button {
+            color: var(--color-white);
+            font-size: 1.2em;
+            padding: 10px;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: color 0.2s;
+        }
+
+        #scanner-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            background-color: rgba(0, 0, 0, 0.5); 
+            z-index: 2; 
+        }
+        #scanner-container video {
+            position: absolute; 
+            min-width: 100%;
+            min-height: 100%;
+            object-fit: cover;
+            z-index: 1; 
+        }
+
+        /* QR Tarama Çerçevesi */
+        .qr-frame {
+            width: 250px;
+            height: 250px;
+            position: relative;
+            border: none; 
+            z-index: 5;
+            box-shadow: 0 0 0 1000px rgba(0, 0, 0, 0.5); 
+        }
+        .frame-corner {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border: 5px solid var(--color-accent);
+        }
+        .top-left { top: -5px; left: -5px; border-right: none; border-bottom: none; border-top-left-radius: 5px; }
+        .top-right { top: -5px; right: -5px; border-left: none; border-bottom: none; border-top-right-radius: 5px; }
+        .bottom-left { bottom: -5px; left: -5px; border-right: none; border-top: none; border-bottom-left-radius: 5px; }
+        .bottom-right { bottom: -5px; right: -5px; border-left: none; border-top: none; border-bottom-right-radius: 5px; }
+
+        /* Tarama Çizgisi Animasyonu */
+        .frame-line {
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--color-accent); 
+            box-shadow: 0 0 10px rgba(255, 195, 0, 0.8);
+            animation: scan-line 2s infinite ease-in-out;
+            z-index: 6;
+            opacity: 0.8;
+        }
+        @keyframes scan-line {
+            0% { transform: translateY(0%); }
+            50% { transform: translateY(250px); }
+            100% { transform: translateY(0%); }
+        }
+
+
+        /* PREMIUM BİLGİLENDİRME EKRANI - YENİLENDİ */
+        #view-premium-info {
+            display: flex;
+            flex-direction: column;
+        }
+        .result-header .center-text { 
+            flex-grow: 1;
+            text-align: center;
+            margin-right: 24px; 
+        }
+
+        .premium-info-content {
+            flex-grow: 1; 
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start; 
+            align-items: center;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .premium-gem-icon {
+            color: var(--color-accent);
+            font-size: 4em; 
+            margin-bottom: 25px;
+            animation: pulse 1.5s infinite ease-in-out; 
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.9; }
+            50% { transform: scale(1.05); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.9; }
+        }
+
+        .premium-title {
+            font-size: 1.8em;
+            font-weight: 700;
+            margin-bottom: 25px;
+            color: var(--color-white);
+        }
+
+        .premium-features-list {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 50px; 
+            text-align: left;
+            max-width: 280px; 
+        }
+        .premium-features-list li {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+            color: var(--color-text-light);
+        }
+        .premium-features-list li i {
+            color: var(--color-success);
+            margin-right: 15px;
+            font-size: 1.3em;
+        }
+
+        /* SATIN ALMA BUTONU STİLİ (AD-FREE BUTONU) */
+        .ad-free-button {
+            width: 100%;
+            max-width: 280px; 
+            background-color: var(--color-accent);
+            color: var(--color-dark);
+            border: none;
+            border-radius: 50px; 
+            padding: 15px 25px;
+            font-size: 1.2em; 
+            font-weight: 900; 
+            cursor: pointer;
+            margin-top: auto; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            letter-spacing: 1px; 
+            box-shadow: 0 8px 20px rgba(255, 195, 0, 0.4); 
+            transition: all 0.2s ease-in-out;
+        }
+        .ad-free-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(255, 195, 0, 0.5);
+        }
+        .ad-free-button:active {
+            transform: translateY(0);
+            box-shadow: 0 5px 10px rgba(255, 195, 0, 0.3);
+        }
+        .ad-free-button .button-icon {
+            margin-right: 10px;
+            font-size: 1.1em;
+            color: var(--color-dark); 
+        }
+
+
+        /* SABİT ALT NAVİGASYON */
+        .bottom-nav {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background-color: var(--color-light-dark);
+            display: flex;
+            justify-content: space-around; 
+            align-items: center;
+            border-top: 1px solid #3a3a3a;
+            border-bottom-left-radius: 40px;
+            border-bottom-right-radius: 40px;
+            padding-bottom: env(safe-area-inset-bottom);
+            z-index: 20;
+        }
+
+        .nav-button {
+            background: none;
+            border: none;
+            font-size: 1.4em; 
+            padding: 15px;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        /* DÜZELTME: İKON RENGİ VE AKTİF GEÇİŞİ */
+        .nav-button:not(.active) i {
+            color: var(--color-text-grey) !important; /* Pasifken Gri */
+        }
+        .nav-button.active i, .nav-button:hover i {
+            color: var(--color-accent) !important; /* Aktifken Sarı */
+        }
+
+        /* ORTA BUTON: QR SİMGESİ İKONUNUN DAİMA KOYU TUT */
+        .main-action-btn i {
+            color: var(--color-dark) !important; /* Sarı zemin üzerinde daima koyu kalsın */
+        }
+
+        .main-action-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: var(--color-accent);
+            font-size: 1.5em;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 10px;
+            box-shadow: 0 5px 15px rgba(255, 195, 0, 0.4);
+            transition: transform 0.2s;
+        }
+        .main-action-btn:active { transform: scale(0.9); }
+
+
+        /* MODAL STİLLERİ - SON DÜZENLEME */
+        .modal {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 30;
+            opacity: 1;
+            transition: opacity 0.3s ease-in-out;
+        }
+        .modal.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .modal-content {
+            background-color: var(--color-light-dark);
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            color: var(--color-text-light);
+            width: 80%;
+            max-width: 300px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            display: flex; 
+            flex-direction: column;
+            align-items: center;
+        }
+        .modal-content h2 {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+        .modal-content p {
+            font-size: 0.9em;
+            color: var(--color-text-grey);
+            margin-bottom: 20px;
+        }
+        .modal-price {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: var(--color-accent);
+            display: block;
+            margin-bottom: 30px; 
+        }
+
+        /* Modal Satın Al Butonu: ad-free-button stilini kullanacak */
+        .modal-buy-btn {
+            width: 100%;
+            max-width: 250px;
+            background-color: transparent; 
+            padding: 0;
+            margin-bottom: 15px;
+        }
+
+        /* Vazgeç Butonu */
+        .close-modal-btn {
+            background: none;
+            color: var(--color-text-grey);
+            border: 2px solid var(--color-text-grey);
+            border-radius: 50px; 
+            padding: 15px 25px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            max-width: 250px; 
+            transition: all 0.2s ease-in-out;
+        }
+        .close-modal-btn:hover {
+            background-color: rgba(255,255,255,0.05);
+            color: var(--color-white);
+            border-color: var(--color-white);
+        }
+    </style>
 </head>
 <body>
     
@@ -38,80 +441,4 @@
             <i id="camera-switch" class="fas fa-sync-alt icon-button"></i> 
         </div>
         
-        <div id="scanner-container">
-            <div class="qr-frame">
-                <div class="frame-corner top-left"></div>
-                <div class="frame-corner top-right"></div>
-                <div class="frame-corner bottom-left"></div>
-                <div class="frame-corner bottom-right"></div>
-                <div class="frame-line"></div>
-            </div>
-        </div>
-    </div>
-
-    <div id="view-result" class="screen hidden">
-        <div class="result-header">
-            <i id="back-to-home" class="fas fa-chevron-left icon-button"></i>
-            <h2>QR Kodu Sonucu</h2>
-        </div>
-        
-        <div class="result-content-area">
-            <p class="data-label">Veri / Güvenlik Kontrolü</p>
-            <p id="result-link" class="data-link"></p>
-            
-            <div id="result-text" class="data-status"></div>
-            <button id="open-link-btn" class="open-button" disabled>Bağlantıyı Aç</button>
-        </div>
-    </div>
-    
-    <div id="view-premium-info" class="screen hidden">
-        <div class="result-header">
-            <i id="back-to-previous" class="fas fa-chevron-left icon-button"></i>
-            <h2 class="center-text">Premium Avantajları</h2>
-        </div>
-        <div class="premium-info-content">
-            <i class="fas fa-gem premium-gem-icon pulse"></i> 
-            
-            <h3 class="premium-title">Reklamsız Tarama</h3>
-            <ul class="premium-features-list">
-                <li><i class="fas fa-check-circle"></i> Reklamsız, Kesintisiz Tarama.</li>
-                <li><i class="fas fa-check-circle"></i> Öncelikli API Kontrolü (Daha Hızlı Sonuç).</li>
-                <li><i class="fas fa-check-circle"></i> Sınırsız Tarama Kapasitesi.</li>
-            </ul>
-            
-            <button id="open-premium-modal" class="premium-buy-btn ad-free-button">
-                <i class="fas fa-star button-icon"></i> REKLAMLARI KALDIR
-            </button>
-        </div>
-    </div>
-
-
-    <div class="bottom-nav">
-        <button id="nav-home" class="nav-button active">
-            <i class="fas fa-bars"></i>
-        </button>
-        <button id="nav-scan" class="nav-button main-action-btn">
-            <i class="fas fa-qrcode"></i> 
-        </button>
-        <button id="nav-premium" class="nav-button">
-            <i class="fas fa-gift"></i> 
-        </button>
-    </div>
-</div>
-
-<div id="premium-modal" class="modal hidden">
-    <div class="modal-content">
-        <h2>Satın Alma Onayı</h2>
-        <p>Aylık 9.99 TL karşılığında Premium üyeliği başlatmak üzeresiniz.</p>
-        <span class="modal-price">9.99 TL</span>
-        
-        <button class="modal-buy-btn ad-free-button">
-            <i class="fas fa-star button-icon"></i> SATIN AL
-        </button>
-        <button class="close-modal-btn">VAZGEÇ</button>
-    </div>
-</div>
-
-<script src="script.js"></script>
-</body>
-</html>
+        <div id="scanner-
