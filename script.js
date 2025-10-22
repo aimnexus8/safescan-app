@@ -1,5 +1,8 @@
+<script src="https://unpkg.com/html5-qrcode"></script>
+
+<script src="script.js"></script>
 // AŞAMA 3.1: API Anahtarınızı Buraya Yerleştirin
-const SAFE_BROWSING_API_KEY = "SİZİN_GOOGLE_API_ANAHTARINIZ"; 
+const SAFE_BROWSING_API_KEY = "AIzaSyDnfWE8vtPjzQ-Tf6FrLAhLb2dRRka7dJU"; 
 
 // DOM Elementleri
 const views = {
@@ -120,49 +123,13 @@ function startScanner() {
 }
 
 
-// AŞAMA 3.4: API Kontrolü Fonksiyonu (Gerçek API Yapısı)
+// AŞAMA 3.4: API Kontrolü Fonksiyonu (Simülasyonlu)
 async function checkSafety(url) {
-    const apiUrl = `https://safebrowsing.googleapis.com/v4/threatMatches:find?key=${SAFE_BROWSING_API_KEY}`;
-    
-    const requestBody = {
-        client: {
-            clientId: "safescan-app",
-            clientVersion: "1.0.0"
-        },
-        threatInfo: {
-            threatTypes: ["MALWARE", "SOCIAL_ENGINEERING", "UNWANTED_SOFTWARE"],
-            platformTypes: ["ANY_PLATFORM"],
-            threatEntryTypes: ["URL"],
-            threatEntries: [
-                { url: url }
-            ]
-        }
-    };
-
-    try {
-        const response = await fetch(apiUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(requestBody)
-        });
-
-        if (!response.ok) return 'ERROR'; // API hatası
-
-        const data = await response.json();
-        
-        // Eğer matches alanı varsa, tehdit bulundu demektir.
-        if (data && data.matches && data.matches.length > 0) {
-            return 'DANGER';
-        } else {
-            return 'SAFE';
-        }
-
-    } catch (error) {
-        console.error("API Bağlantı Hatası:", error);
-        return 'ERROR';
+    await new Promise(resolve => setTimeout(resolve, 1500)); 
+    if (url.includes('malicious') || url.includes('virus') || url.includes('scam')) {
+        return 'DANGER'; 
     }
+    return 'SAFE';
 }
 
 

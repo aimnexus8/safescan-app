@@ -323,7 +323,7 @@ body {
 .main-action-btn:active { transform: scale(0.9); }
 
 
-/* MODAL STİLLERİ - ONARILDI */
+/* MODAL STİLLERİ - SON DÜZENLEME */
 .modal {
     position: absolute;
     top: 0;
@@ -395,6 +395,7 @@ body {
 .modal-buy-btn:hover { transform: translateY(-3px); box-shadow: 0 12px 25px rgba(255, 195, 0, 0.5); }
 .modal-buy-btn:active { transform: translateY(0); box-shadow: 0 5px 10px rgba(255, 195, 0, 0.3); }
 .modal-buy-btn .button-icon { margin-right: 10px; font-size: 1em; color: var(--color-dark); }
+
 
 /* Vazgeç Butonu */
 .close-modal-btn {
